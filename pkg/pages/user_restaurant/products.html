@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>HarvestHub Produce E-Commerce</title>
+    <link rel="stylesheet" type="text/css" href="/static/assets/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/static/assets/css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/assets/font-awesome/css/all.css"/>
+    <style>
+        .card-body {
+          text-align: center;
+          padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg nav-body">
+    <div class="container">
+        <a class="navbar-brand" href="#"><img src="/static/assets/images/harvest-hub.png" alt="" class="nav-logo"/></a>
+        <button class="navbar-toggler bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-3 align-items-center">
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <form action="" id="post">
+                        <input type="text" name="" id="search" placeholder="Search product" class="form-control mx-2">
+                    </form>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/products?product_name=Vegetables">Vegetables</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/products?product_name=Legumes">Legumes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/products?product_name=Barn Products">Barn Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" href="/products?product_name=Proteins">Proteins</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/cart" type="button"
+                       class="btn btn-light bg-transparent border-0 text-white btn-sm position-relative">
+                        <i class="fa-solid fa-cart-shopping fs-6"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                <span>{{ cart_items | length }}</span>
+                <span class="visually-hidden">cart items</span>
+              </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container my-5">
+    {% set message = get_flashed_messages(with_categories=True) %}
+                {% if message %}
+                  {% for msg , cat in message %}
+                    {% if cat == 'errors' %}
+                      <div class="alert alert-danger mt-3">{{msg}}</div>
+                    {% else %}
+                      <div class="alert alert-success">{{msg}}</div>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+    {% if not products %}
+    <div class="row">
+        <div class="col-12 text-center">
+            <p>No products available</p>
+        </div>
+    </div>
+    {% else %}
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-3 col-lg-3 mb-4">
+            <form class="card border rounded-4 p-1" action="/cart/add/" method="post">
+                <input type="hidden" name="pro_id" value="{{ product.pro_id }}">
+                <input type="hidden" name="quantity" value="1">
+                <div class="card-body text-start">
+                    {% if product.pro_picture %}
+                    <img src="{{ url_for('static', filename='uploaded/' + product.pro_picture) }}"
+                         class="card-img-top mb-3 border" alt="{{ product.pro_name }}"/>
+                    {% else %}
+                    <img src="{{ url_for('static', filename='assets/images/default-product.jpg') }}"
+                         class="card-img-top" alt="No image available"/>
+                    {% endif %}
+                    <p class="font-bold text-center">{{product.farmer.farm_name}}</p>
+                    <input type="hidden" value={{product.farmer.farm_id}}>
+                    <p class="m-0 fs-6 lh-1">{{ product.pro_name }}</p>
+                    <p class="m-0 fw-semibold fs-6 lh-1 mt-1">₦{{ '%.2f' % product.price_per_unit }}</p>
+                    {% set in_cart = product.pro_id in cart_items | map(attribute='pro_id') %}
+                    {% if in_cart %}
+                    <button type="button"
+                            class="btn btn-outline-secondary btn-sm btn-buy rounded-4 px-3 mt-3 btn-disabled" disabled>
+                        Added to cart
+                        <i class="fa fa-check fs-6 ms-2"></i>
+                    </button>
+                    {% else %}
+                    <button type="submit" class="btn btn-outline-secondary btn-sm btn-buy rounded-4 px-3 mt-3"
+                            data-id="{{ product.pro_id }}">
+                        <i class="fa fa-cart-plus fs-6 me-2"></i>
+                        Add to cart
+                    </button>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+        {% if loop.index % 4 == 0 %}
+    </div>
+    <div class="row">
+        {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<footer class="text-center">
+    <p><strong>&copy; 2024 HarvestHub. All rights reserved.</strong></p>
+</footer>
+
+<script src="/static/assets/bootstrap/js/bootstrap.bundle.js"></script>
+<script src="/static/assets/jquery-3.7.1.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+        var cartCount = 0;
+        $(".btn-buy").each(function () {
+            $(this).click(function () {
+                cartCount++;
+                $("#change-num").text(cartCount);
+                $("#change-num").removeClass("bg-danger").addClass('bg-success');
+            });
+        });
+
+        $('#search').keyup(function(){
+                var searchData = $(this).val()
+                var csrfToken = $("#csrf_token").val(); 
+                $.ajax({
+                    url:'/product/search/',
+                    type:'POST',
+                    data: { search: searchData, csrf_token: csrfToken },  
+                    beforeSend:function(){
+                        // $('#show').html('Loading..........')
+                        $('#show').html('<img src="/static/images/spinner.gif" width="50">')
+                    },
+                    success:function(resp){
+                        $('#show').html(resp)
+                    },
+                    error:function(err){
+                        console.log(err);
+                    }
+                })
+            })
+    });
+</script>
+</body>
+</html>

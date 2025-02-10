@@ -1,0 +1,188 @@
+{% include "index_nav.html" %}
+
+<main class="overflow-x-hidden">
+  <header class="hero-img">
+    <div class="inner">
+      <div class="container d-flex flex-column align-items-center justify-content-center text-light text-center">
+        <h1 style="font-size: 4rem; max-width: 1000px;">
+          Connecting Fresh Farm Produce Directly to Restaurants
+        </h1>
+        <p style="max-width: 600px;">
+          Harvest Hub delivers farm-fresh produce straight to your door. For farmers, we eliminate the trouble of
+          middlemen, making it a win-win for everyone!
+        </p>
+        <a href="/products/" class="btn btn-success btn-lg mt-4">Explore Fresh Produce</a>
+      </div>
+    </div>
+  </header>
+  <div class="container">
+    <article class="row analytics justify-content-center">
+      <div class="col-md-3">
+        <div class="card px-4 py-3 rounded-4">
+          <h4 class="counter lh-1" data-count="300">0</h4>
+          <p class="m-0">Farmers</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card px-4 py-3 rounded-4">
+          <h4 class="counter lh-1" data-count="700">0</h4>
+          <p class="m-0">Happy Customers</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card px-4 py-3 rounded-4">
+          <h4 class="counter lh-1" data-count="200">0</h4>
+          <p class="m-0">Registered Logistic Services</p>
+        </div>
+      </div>
+    </article>
+  </div>
+  <div class="section">
+    <div class="container">
+      <h2 class="fs-1 mb-5 text-center mx-auto" style="max-width: 500px;">From the farm to your doorstep</h2>
+      <section class="row">
+        <div class="col-md-4">
+          <img src="/static/assets/images/fruits-veggies.png" alt="fruit and vegetables"
+            class="img-fluid border rounded-4 mb-2" />
+          <h5 class="fs-5">Fruits And Vegetables</h5>
+          <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center"> <a
+              href="/products/?product_name=Vegetables" class="text-decoration-none text-secondary">Shop
+              Now</a><span></span> <i class="fa fa-chevron-right fs-6 ms-2"></i></button>
+        </div>
+        <div class="col-md-4">
+          <img src="/static/assets/images/yam-plantain.png" alt="yam and plantain"
+            class="img-fluid border rounded-4 mb-2" />
+          <h5 class="fs-5">Legumes</h5>
+          <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center"><span>Shop
+              now</span> <i class="fa fa-chevron-right fs-6 ms-2"></i></button>
+        </div>
+        <div class="col-md-4">
+          <img src="static/assets/images/legumes.png" alt="yam and plantain" class="img-fluid border rounded-4 mb-2" />
+          <h5 class="fs-5">Barn Products</h5>
+          <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center"><span>Shop
+              now</span> <i class="fa fa-chevron-right fs-6 ms-2"></i></button>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div class="container-fluid overflow-hidden">
+    <h2 class="fs-1 mb-5 text-center mx-auto" style="max-width: 500px;">How does HarvestHub Work</h2>
+    <section class="row justify-content-center">
+      <aside class="col-md-2 d-flex flex-column align-items-center me-md-5">
+        <i class="fa-solid fa-right-to-bracket"></i>
+        <p class="ver-border d-none d-md-block mt-2"></p>
+      </aside>
+      <aside class="col-md-4 ms-md-5">
+        <h3>Sign Up</h3>
+        <p class="mt-2">
+          Easily crate an account with our fast and intuitive interface and
+          get right into shopping
+        </p>
+      </aside>
+    </section>
+  </div>
+  <section class="row justify-content-center my-3">
+    <aside class="col-2 d-flex flex-column align-items-center me-md-5">
+      <i class="fa-solid fa-check"></i>
+      <p class="d-none d-md-block ver1-border"></p>
+    </aside>
+    <aside class="col-md-4 ms-md-5">
+      <h3>Choose products</h3>
+      <p class="mt-2">
+        Select the products you would like to order and send it to your
+        shopping Cart
+      </p>
+    </aside>
+  </section>
+  <section class="row justify-content-center">
+    <aside class="col-2 d-flex flex-column align-items-center me-md-5">
+      <i class="fa-solid fa-truck-fast"></i>
+      <p class="ver2-border d-none d-md-block"></p>
+    </aside>
+    <aside class="col-md-4 ms-md-5">
+      <h3>Delivery</h3>
+      <p class="mt-2">We will deliver to you in less than an hour</p>
+    </aside>
+  </section>
+
+  <section class="slanted-border section">
+    <div class="container">
+      <h2 class="fs-1 mb-5 mx-auto text-white" style="max-width: 500px;">Some of our amazing deals</h2>
+      <div class="row">
+        {% for product in products %}
+        <div class="col-md-3">
+          <div class="card rounded-4 overflow-hidden">
+            {% if product.pro_picture %}
+            <img src="{{ url_for('static', filename='uploaded/' + product.pro_picture) }}"
+              class="card-img-top mb-3 border" alt="{{ product.pro_name }}" />
+            {% else %}
+            <img src="{{ url_for('static', filename='assets/images/default-product.jpg') }}" class="card-img-top"
+              alt="No image available" />
+            {% endif %}
+            <!-- <img src={{product.pro_picture}} class="card-img-top" alt="Product 1" /> -->
+            <div class="card-body px-4">
+              <h5 class="fs-6">{{product.pro_name}}</h5>
+              <p class="price lh-1">{{product.price_per_unit}}</p>
+              <button class="btn btn-outline-secondary btn-sm rounded-4 px-3 d-flex align-items-center">
+                <i class="fa fa-cart-plus fs-6 me-2"></i> <a href="/products/"
+                  class="text-decoration-none text-secondary">Shop Now</a>
+              </button>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <br><br><br><br>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <h2 class="fs-1 mb-5 text-center mx-auto" style="max-width: 500px;">What sets us apart?</h2>
+      <div class="row">
+        <div class="col-md-4">
+          <img src="static/assets/images/farm_apple.gif" alt="a hand getting an apple"
+            class="img-fluid border rounded-4 mb-2" />
+          <h4 class="fs-5">Freshly Harvested Today, Delivered Tomorrow</h4>
+          <p>
+            Fresh, local foodstuffs like rice, yam, and eggs delivered fast to
+            your doorstep nutrient packed and free from storage delays.
+          </p>
+        </div>
+        <div class="col-md-4">
+          <img src="static/assets/images/foodstuff.gif" alt="foodstuff" class="img-fluid border rounded-4 mb-2" />
+          <h4 class="fs-5">No be your regular delivery</h4>
+          <p>
+            Shop fresh and affordable produce directly from farmers, ensuring
+            fair prices for both you and them, with doorstep delivery you can
+            trust.
+          </p>
+        </div>
+        <div class="col-md-4">
+          <img src="static/assets/images/fruits.gif" alt="foodstuff" class="img-fluid border rounded-4 mb-2" />
+          <h4 class="fs-5">Your Must-Haves, Always Ready</h4>
+          <p>
+            Enjoy set-and-forget convenience. Subscribe to our farm boxes plan
+            and weekly grocery staples on your schedule.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<section class="container">
+  <div class="row design justify-content-center align-items-center">
+    <div class="text-light inner-design text-center">
+      <h2>Subscribe to our exciting farm boxes</h2>
+      <p class="mx-auto mt-2" style="max-width: 500px;">
+        We have made affordable boxes you can subscribe and have it
+        delivered to your doorstep every month
+      </p>
+      <button class="btn btn-success btn-lg mt-3">Subscribe Now</button>
+    </div>
+  </div>
+  <br><br>
+  <br><br>
+</section>
+
+
+{% include 'footer.html' %}

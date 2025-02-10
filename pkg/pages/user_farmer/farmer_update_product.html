@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Product</title>
+    <link href="/static/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/assets/css/farmer-dashboard.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/assets/css/style.css"/>
+</head>
+<body class="container-fluid">
+<div class="row">
+    <!-- Sidebar -->
+    <div class="col-md-3 sidebar d-flex flex-column p-3">
+        <a class="navbar-brand" href="#">
+            <img src="/static/assets/images/harvest-hub.png" alt="" class="nav-logo"/>
+        </a>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('farmer_add_product') }}">Add Product</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('farmer_dashboard') }}">View Products</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/">Back to home</a>
+            </li>
+        </ul>
+        <!-- Logout Button -->
+        <div class="mt-auto text-center">
+            <div class="row">
+                <div class="col-md-7">
+                    {# <p class="text-left">Hello, {{ current_user.username }}</p> #}
+                </div>
+                <div class="col-md-4">
+                    <a href="/farmer-logout/" class="btn btn-danger btn-sm">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-md-9 content">
+        <h2 class="mt-3">Update Product</h2>
+        <form action="{{ url_for('farmer_update_product', pro_id=product.pro_id) }}" method="post" enctype="multipart/form-data" class="mt-3">
+           {# <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">#}
+            
+            <div class="mb-3">
+                <label for="pro_name" class="form-label">Product Name</label>
+                <input type="text" name="pro_name" id="pro_name" class="form-control" value="{{ product.pro_name }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="pro_category_id" class="form-label">Category</label>
+                <select name="pro_category_id" id="pro_category_id" class="form-control">
+                    {% for category in categories %}
+                        <option value="{{ category.category_id }}" {% if category.category_id == product.pro_category_id %}selected{% endif %}>
+                            {{ category.category_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="qua_avail" class="form-label">Quantity Available</label>
+                <input type="number" name="qua_avail" id="qua_avail" class="form-control" value="{{ product.qua_avail }}" step="0.01" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="price_per_unit" class="form-label">Price Per Unit</label>
+                <input type="number" name="price_per_unit" id="price_per_unit" class="form-control" value="{{ product.price_per_unit }}" step="0.01" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="pro_picture" class="form-label">Product Image</label>
+                <input type="file" name="pro_picture" id="pro_picture" class="form-control">
+                {% if product.pro_picture %}
+                    <img src="/static/uploaded/{{ product.pro_picture }}" alt="Product Image" class="img-fluid mt-2" width="300">
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-warning">Update Product</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/static/assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
