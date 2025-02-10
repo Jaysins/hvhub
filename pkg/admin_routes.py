@@ -1,4 +1,4 @@
-from flask import render_template, redirect, flash, session, request, url_for
+from flask import render_template, redirect, flash, session, request, url_for, jsonify
 from werkzeug.security import check_password_hash
 from flask import current_app as app
 from pkg.models import db, Farmer, Restaurant, Admin, Category, Product, Payment
@@ -48,13 +48,12 @@ def admin():
     rest_deets = db.session.query(Restaurant).all()
     paydeets = db.session.query(Payment).filter(Payment.pay_status == 'paid').all()
     category = db.session.query(Category).all()
-    print(rest_deets)
     return render_template(
         'admin/admin.html',
         admin_name=admin_name,
         farmers_deets=farmers_deets,
         rest_deets=rest_deets,
-        category=category, paydeets=paydeets
+        category=category, paydeets=paydeets,
     )
 
 
@@ -118,21 +117,20 @@ def toggle_rest_account():
         return redirect('/admin-dashboard/#restaurants')
 
 
-@app.route('/add-category/', methods=['GET', 'POST'])
+@app.route('/add-category/', methods=['POST'])
 def add_category():
-    form = CategoryForm()
-    if form.validate_on_submit():
-        category_name = form.name.data
-        new_category = Category(name=category_name)
-        try:
-            db.session.add(new_category)
-            db.session.commit()
-            flash('Category added successfully!', 'success')
-            return redirect(url_for('add_category'))
-        except:
-            db.session.rollback()
-            flash('Error adding category.', 'danger')
-    return render_template('admin/admin.html', form=form)
+    category_name = request.form['category_name']
+    new_category = Category(category_name=category_name)
+    try:
+        db.session.add(new_category)
+        db.session.commit()
+        flash('Category added successfully!', 'success')
+        return jsonify({"success": True})
+    except:
+        db.session.rollback()
+        flash('Error adding category.', 'danger')
+        return jsonify({"success": False})
+
 
 
 @app.route("/admin-logout/")
